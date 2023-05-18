@@ -1,0 +1,61 @@
+.tabs {
+  overflow: hidden;
+}
+
+.mat-tab {
+  align-items: center;
+}
+.mat-mdc-form-field-subscript-wrapper mat-mdc-form-field-bottom-align ng-tns-c22-1{
+  height: 0;
+}
+@media screen and (max-width: 600px) {
+  .error {
+    font-size: 9px;
+    margin-top: 0px;
+    margin-bottom: 4px;
+  }
+  .mat-form-field {
+    width: 100%;
+    font-size: small;
+    left: 0
+  }
+  .form-field {
+    width: 100%;
+    height: 64px;
+  }
+  .tab {
+    width: 100%;
+    height: auto;
+  }
+  .tabs {
+    width: fit-content;
+    height: 80%;
+    font-size: small;
+    overflow: hidden;
+  }
+}
+@media screen and (min-width: 600px) {
+  .error {
+    font-size: 11px;
+    margin-top: 0px;
+    margin-bottom: 4px;
+  }
+  .mat-tab-label {
+    font-size: 16px;
+  }
+  .mat-form-field {
+    width: 140px;
+    font-size: medium;
+  }
+  .form-field {
+    width: 350px;
+  }
+  .tabs {
+    width: 350px;
+    overflow: hidden;
+    height: 100%;
+  }
+  .tab {
+    width: 430px;
+  }
+}
