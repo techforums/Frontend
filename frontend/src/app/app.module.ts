@@ -57,7 +57,7 @@ import { DeleteDocumentDialogComponent } from './admin/admin-manage-resources/de
 import { GetDocumentsComponent } from './admin/admin-manage-resources/get-documents/get-documents.component';
 import { UpdateForumComponent } from './profile/manageforums/update-forum/update-forum.component';
 import { DeleteForumDialogComponent } from './profile/manageforums/delete-forum-dialog/delete-forum-dialog.component';
-
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsColor: '#00b8d4',
   fgsPosition: 'center-center',
@@ -175,6 +175,7 @@ ClassicEditor.defaultConfig = {
       useClass: CookieInterceptor,
       multi: true,
     },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],
 })

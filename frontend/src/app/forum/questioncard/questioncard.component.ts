@@ -22,7 +22,6 @@ import { SigninSignupComponent } from 'src/app/layout/header/signin-signup/signi
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-// import { log } from 'console';
 
 @Component({
   selector: 'app-questioncard',

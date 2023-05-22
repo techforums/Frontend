@@ -19,7 +19,7 @@
 </div>
 <div class="flex">
   <div class="blogs" *ngIf="isUserAuthenticated">
-    <h5>Expore Blogs</h5>
+    <h5>Explore Blogs</h5>
     <mat-card class="blogcard" *ngFor="let blog of allBlogs">
       <mat-card-title (click)="getBlog(blog._id)" class="blogtitle">
         {{ blog.title }}
