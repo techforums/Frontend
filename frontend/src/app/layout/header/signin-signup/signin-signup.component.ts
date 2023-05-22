@@ -62,7 +62,9 @@ export class SigninSignupComponent implements OnInit {
     const regex = new RegExp(
       "([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|[[\t -Z^-~]*])"
     );
-    const pswd = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")
+    const pswd = new RegExp(
+      '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$'
+    );
     this.signUpForm = this.fb.group(
       {
         firstName: [
@@ -83,7 +85,8 @@ export class SigninSignupComponent implements OnInit {
         password: [
           '',
           [
-            Validators.required,Validators.pattern(pswd),
+            Validators.required,
+            Validators.pattern(pswd),
             Validators.minLength(6),
           ],
         ],
@@ -102,17 +105,22 @@ export class SigninSignupComponent implements OnInit {
       : { passwordMismatch: true };
   }
   onSignIn(): void {
-    this.authService.signIn(this.signInForm.value).subscribe((response) => {
-      const expirationTime = new Date(Date.now() + 12 * 60 * 60 * 1000);
-      localStorage.setItem('userId', response.data._id);
-      localStorage.setItem('userIdExpiration', expirationTime.toISOString());
-      localStorage.setItem('name', response.data.name);
-      console.log(response);
-      this.snackBar.open(response.message, 'Dismiss', commonSnackBarConfig);
-      this.dialogRef.close();
-      this.authService.isSignedIn = true;
-      this.authService.authChanged.emit(true);
-    });
+    this.authService.signIn(this.signInForm.value).subscribe(
+      (response) => {
+        const expirationTime = new Date(Date.now() + 12 * 60 * 60 * 1000);
+        localStorage.setItem('userId', response.data._id);
+        localStorage.setItem('userIdExpiration', expirationTime.toISOString());
+        localStorage.setItem('name', response.data.name);
+        console.log(response);
+        this.snackBar.open(response.message, 'Dismiss', commonSnackBarConfig);
+        this.dialogRef.close();
+        this.authService.isSignedIn = true;
+        this.authService.authChanged.emit(true);
+      },
+      (error) => {
+        this.snackBar.open(error.error.message, 'Dismiss', commonSnackBarConfig);
+      }
+    );
   }
 
   onSignUp(): void {
@@ -127,11 +135,7 @@ export class SigninSignupComponent implements OnInit {
         this.selectedTabIndex = 0;
       },
       (error) => {
-        this.snackBar.open(
-          error.error.message,
-          'Dismiss',
-          commonSnackBarConfig
-        );
+        this.snackBar.open(error.error.message, 'Dismiss', commonSnackBarConfig);
       }
     );
   }
@@ -174,10 +178,13 @@ export class SigninSignupComponent implements OnInit {
     if (controlName === 'password' && control?.hasError('pattern')) {
       return 'Include UpperCase, number & specialCharacter';
     }
-    if (controlName === 'confirmPassword' && control?.hasError('checkPasswords')) {
+    if (
+      controlName === 'confirmPassword' &&
+      control?.hasError('checkPasswords')
+    ) {
       return 'Include UpperCase, number & specialCharacter';
     }
-    
+
     return '';
   }
 }

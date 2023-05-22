@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from 'src/app/service/auth.service';
 import { commonSnackBarConfig } from 'src/app/service/snackbar-config.service';
-
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 @Component({
   selector: 'app-forgotpassword',
   templateUrl: './forgotpassword.component.html',
@@ -17,7 +17,8 @@ export class ForgotpasswordComponent implements OnInit {
     private authService: AuthService,
     public dialogRef: MatDialogRef<ForgotpasswordComponent>,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private ngxLoader: NgxUiLoaderService
   ) {}
 
   openForgotPasswordDialog(): void {
@@ -35,13 +36,16 @@ export class ForgotpasswordComponent implements OnInit {
     });
   }
   onForgotPassword() {
+    this.ngxLoader.start();
     this.authService.forgotPassword(this.forgotPasswordForm.value).subscribe(
       (response) => {
         console.log(response);
+        this.ngxLoader.stop();
         this.snackBar.open(response.message, 'Dismiss', commonSnackBarConfig);
         this.dialogRef.close();
       },
       (error) => {
+        this.ngxLoader.stop();
         this.snackBar.open(
           error.error.message,
           'Dismiss',

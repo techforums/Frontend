@@ -1,6 +1,5 @@
 import { Component, Sanitizer } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { AdminService } from 'src/app/service/admin.service';
 import { DeleteDialogComponent } from 'src/app/admin/admin-manage-users/delete-dialog/delete-dialog.component'
