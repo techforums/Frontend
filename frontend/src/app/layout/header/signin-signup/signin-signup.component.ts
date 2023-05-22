@@ -65,35 +65,26 @@ export class SigninSignupComponent implements OnInit {
     const pswd = new RegExp(
       '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$'
     );
-    this.signUpForm = this.fb.group(
-      {
-        firstName: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*"),
-          ],
+    this.signUpForm = this.fb.group({
+      firstName: [
+        '',
+        [Validators.required, Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*")],
+      ],
+      lastName: [
+        '',
+        [Validators.required, Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*")],
+      ],
+      emailId: ['', [Validators.required, Validators.pattern(regex)]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(pswd),
+          Validators.minLength(6),
         ],
-        lastName: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*"),
-          ],
-        ],
-        emailId: ['', [Validators.required, Validators.pattern(regex)]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(pswd),
-            Validators.minLength(6),
-          ],
-        ],
-        confirmPassword: ['', [Validators.required]],
-      },
-      { validator: this.checkPasswords }
-    );
+      ],
+      confirmPassword: ['', [Validators.required, this.checkPasswords]],
+    });
   }
   checkPasswords(group: FormGroup) {
     const password = group.get('password');
@@ -118,7 +109,11 @@ export class SigninSignupComponent implements OnInit {
         this.authService.authChanged.emit(true);
       },
       (error) => {
-        this.snackBar.open(error.error.message, 'Dismiss', commonSnackBarConfig);
+        this.snackBar.open(
+          error.error.message,
+          'Dismiss',
+          commonSnackBarConfig
+        );
       }
     );
   }
@@ -135,7 +130,11 @@ export class SigninSignupComponent implements OnInit {
         this.selectedTabIndex = 0;
       },
       (error) => {
-        this.snackBar.open(error.error.message, 'Dismiss', commonSnackBarConfig);
+        this.snackBar.open(
+          error.error.message,
+          'Dismiss',
+          commonSnackBarConfig
+        );
       }
     );
   }
@@ -178,11 +177,14 @@ export class SigninSignupComponent implements OnInit {
     if (controlName === 'password' && control?.hasError('pattern')) {
       return 'Include UpperCase, number & specialCharacter';
     }
+    if (controlName === 'confirmPassword' && control?.hasError('pattern')) {
+      return 'Include UpperCase, number & specialCharacter';
+    }
     if (
       controlName === 'confirmPassword' &&
       control?.hasError('checkPasswords')
     ) {
-      return 'Include UpperCase, number & specialCharacter';
+      return 'Password not matched';
     }
 
     return '';
