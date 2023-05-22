@@ -83,7 +83,10 @@ export class SigninSignupComponent implements OnInit {
           Validators.minLength(6),
         ],
       ],
-      confirmPassword: ['', [Validators.required, this.checkPasswords]],
+      confirmPassword: [
+        '',
+        [Validators.required, Validators.this.checkPasswords],
+      ],
     });
   }
   checkPasswords(group: FormGroup) {
@@ -182,7 +185,7 @@ export class SigninSignupComponent implements OnInit {
     }
     if (
       controlName === 'confirmPassword' &&
-      control?.hasError('checkPasswords')
+      control?.hasError('this.checkPasswords')
     ) {
       return 'Password not matched';
     }
