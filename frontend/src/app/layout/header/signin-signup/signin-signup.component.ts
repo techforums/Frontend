@@ -6,8 +6,6 @@ import { AuthService } from 'src/app/service/auth.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { commonSnackBarConfig } from 'src/app/service/snackbar-config.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { UserRoleService } from 'src/app/service/user-role.service';
 
 @Component({
   selector: 'app-signin-signup',
@@ -27,8 +25,6 @@ export class SigninSignupComponent implements OnInit {
     public dialogRef: MatDialogRef<SigninSignupComponent>,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
-    private router: Router,
-    private userRoleService: UserRoleService
   ) {
     this.breakpointObserver.observe(Breakpoints.Handset).subscribe((result) => {
       this.isMobile = result.matches;
@@ -65,29 +61,35 @@ export class SigninSignupComponent implements OnInit {
     const pswd = new RegExp(
       '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$'
     );
-    this.signUpForm = this.fb.group({
-      firstName: [
-        '',
-        [Validators.required, Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*")],
-      ],
-      lastName: [
-        '',
-        [Validators.required, Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*")],
-      ],
-      emailId: ['', [Validators.required, Validators.pattern(regex)]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(pswd),
-          Validators.minLength(6),
+    this.signUpForm = this.fb.group(
+      {
+        firstName: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*"),
+          ],
         ],
-      ],
-      confirmPassword: [
-        '',
-        [Validators.required, Validators.this.checkPasswords],
-      ],
-    });
+        lastName: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*"),
+          ],
+        ],
+        emailId: ['', [Validators.required, Validators.pattern(regex)]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(pswd),
+            Validators.minLength(6),
+          ],
+        ],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validator: this.checkPasswords }
+    );
   }
   checkPasswords(group: FormGroup) {
     const password = group.get('password');
@@ -182,12 +184,6 @@ export class SigninSignupComponent implements OnInit {
     }
     if (controlName === 'confirmPassword' && control?.hasError('pattern')) {
       return 'Include UpperCase, number & specialCharacter';
-    }
-    if (
-      controlName === 'confirmPassword' &&
-      control?.hasError('this.checkPasswords')
-    ) {
-      return 'Password not matched';
     }
 
     return '';
