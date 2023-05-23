@@ -30,6 +30,7 @@
   <div class="blogs" *ngIf="!isUserAuthenticated">
     <h5>Expore Blogs</h5>
     <mat-card class="blogcard" *ngFor="let blogt of allBlogst">
+      
       <mat-card-title routerLink="/blog/:id" class="blogtitle">
         {{ blogt.title }}
       </mat-card-title>
