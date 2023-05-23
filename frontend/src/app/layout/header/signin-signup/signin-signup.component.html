@@ -6,7 +6,8 @@
                 <mat-form-field appearance="fill" style="margin-top: 10px;" class="form-field">
                     <mat-label>Email</mat-label>
                     <input matInput type="email" formControlName="emailId" required>
-                    <mat-error class="error" *ngIf="signInForm.controls['emailId'].invalid">{{getErrorMessage('emailId')}}</mat-error>
+                    <mat-error class="error"
+                        *ngIf="signInForm.controls['emailId'].invalid">{{getErrorMessage('emailId')}}</mat-error>
                 </mat-form-field><br />
                 <mat-form-field appearance="fill" class="form-field">
                     <mat-label>Password</mat-label>
@@ -14,7 +15,7 @@
                     <mat-error class="error"
                         *ngIf="signInForm.controls['password'].invalid">{{getErrorMessage('password')}}</mat-error>
                 </mat-form-field><br /><br />
-                <button mat-raised-button color="primary" [disabled]="!signInForm.valid">Sign In</button>
+                <button mat-raised-button color="primary">Sign In</button>
                 <a style="color: #00b8d4; cursor: pointer; margin-left: 8px;" (click)="onForgotPassword()"
                     *ngIf="!isMobile">Forgot Password?</a>
                 <div class="fp" *ngIf="isMobile"><br />
@@ -27,29 +28,34 @@
                 <mat-form-field appearance="fill" style="margin-top: 10px;" class="form-field">
                     <mat-label>First Name</mat-label>
                     <input matInput type="text" formControlName="firstName" required>
-                    <mat-error class="error" *ngIf="signUpForm.controls['firstName'].invalid">{{getErrorMessageS('firstName')}}</mat-error>
+                    <mat-error class="error"
+                        *ngIf="signUpForm.controls['firstName'].invalid">{{getErrorMessageS('firstName')}}</mat-error>
                 </mat-form-field><br />
                 <mat-form-field appearance="fill" class="form-field">
                     <mat-label>Last Name</mat-label>
                     <input matInput type="text" formControlName="lastName" required>
-                    <mat-error class="error" *ngIf="signUpForm.controls['lastName'].invalid">{{getErrorMessageS('lastName')}}</mat-error>
+                    <mat-error class="error"
+                        *ngIf="signUpForm.controls['lastName'].invalid">{{getErrorMessageS('lastName')}}</mat-error>
                 </mat-form-field><br />
                 <mat-form-field appearance="fill" class="form-field">
                     <mat-label>Email</mat-label>
                     <input matInput type="email" formControlName="emailId" required>
-                    <mat-error class="error" *ngIf="signUpForm.controls['emailId'].invalid">{{getErrorMessageS('emailId')}}</mat-error>
+                    <mat-error class="error"
+                        *ngIf="signUpForm.controls['emailId'].invalid">{{getErrorMessageS('emailId')}}</mat-error>
                 </mat-form-field><br />
                 <mat-form-field appearance="fill" class="form-field">
                     <mat-label>Password</mat-label>
                     <input matInput type="password" formControlName="password" required>
-                    <mat-error class="error" *ngIf="signUpForm.controls['password'].invalid">{{getErrorMessageS('password')}}</mat-error>
-                </mat-form-field><br /> 
+                    <mat-error class="error"
+                        *ngIf="signUpForm.controls['password'].invalid">{{getErrorMessageS('password')}}</mat-error>
+                </mat-form-field><br />
                 <mat-form-field appearance="fill" class="form-field">
                     <mat-label>Confirm Password</mat-label>
                     <input matInput type="password" formControlName="confirmPassword" required>
-                    <mat-error class="error" *ngIf="signUpForm.controls['confirmPassword'].invalid">{{getErrorMessageS('confirmPassword')}}</mat-error>
+                    <mat-error class="error"
+                        *ngIf="signUpForm.controls['confirmPassword'].invalid">{{getErrorMessageS('confirmPassword')}}</mat-error>
                 </mat-form-field><br />
-                <button mat-raised-button color="primary" [disabled]="!signUpForm.valid ">Sign Up</button>
+                <button mat-raised-button color="primary">Sign Up</button>
             </form>
         </mat-tab>
     </mat-tab-group>

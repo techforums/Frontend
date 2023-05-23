@@ -24,7 +24,7 @@ export class SigninSignupComponent implements OnInit {
     private authService: AuthService,
     public dialogRef: MatDialogRef<SigninSignupComponent>,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar,
+    private snackBar: MatSnackBar
   ) {
     this.breakpointObserver.observe(Breakpoints.Handset).subscribe((result) => {
       this.isMobile = result.matches;
@@ -101,47 +101,62 @@ export class SigninSignupComponent implements OnInit {
       : { passwordMismatch: true };
   }
   onSignIn(): void {
-    this.authService.signIn(this.signInForm.value).subscribe(
-      (response) => {
-        const expirationTime = new Date(Date.now() + 12 * 60 * 60 * 1000);
-        localStorage.setItem('userId', response.data._id);
-        localStorage.setItem('userIdExpiration', expirationTime.toISOString());
-        localStorage.setItem('name', response.data.name);
-        console.log(response);
-        this.snackBar.open(response.message, 'Dismiss', commonSnackBarConfig);
-        this.dialogRef.close();
-        this.authService.isSignedIn = true;
-        this.authService.authChanged.emit(true);
-      },
-      (error) => {
-        this.snackBar.open(
-          error.error.message,
-          'Dismiss',
-          commonSnackBarConfig
-        );
-      }
-    );
+    if (this.signInForm.valid) {
+      this.authService.signIn(this.signInForm.value).subscribe(
+        (response) => {
+          const expirationTime = new Date(Date.now() + 12 * 60 * 60 * 1000);
+          localStorage.setItem('userId', response.data._id);
+          localStorage.setItem(
+            'userIdExpiration',
+            expirationTime.toISOString()
+          );
+          localStorage.setItem('name', response.data.name);
+          console.log(response);
+          this.snackBar.open(response.message, 'Dismiss', commonSnackBarConfig);
+          this.dialogRef.close();
+          this.authService.isSignedIn = true;
+          this.authService.authChanged.emit(true);
+        },
+        (error) => {
+          this.snackBar.open(
+            error.error.message,
+            'Dismiss',
+            commonSnackBarConfig
+          );
+        }
+      );
+    } else {
+      return this.signInForm.markAllAsTouched();
+    }
   }
 
   onSignUp(): void {
-    this.authService.signUp(this.signUpForm.value).subscribe(
-      (response) => {
-        console.log(response);
-        this.snackBar.open(
-          response.message + ' Please Sign In to continue',
-          'Dismiss',
-          commonSnackBarConfig
-        );
-        this.selectedTabIndex = 0;
-      },
-      (error) => {
-        this.snackBar.open(
-          error.error.message,
-          'Dismiss',
-          commonSnackBarConfig
-        );
-      }
-    );
+    if (this.signUpForm.valid) {
+      this.authService.signUp(this.signUpForm.value).subscribe(
+        (response) => {
+          console.log(response);
+          this.snackBar.open(
+            response.message + ' Please Sign In to continue',
+            'Dismiss',
+            commonSnackBarConfig
+          );
+          this.selectedTabIndex = 0;
+        },
+        (error) => {
+          this.snackBar.open(
+            error.error.message,
+            'Dismiss',
+            commonSnackBarConfig
+          );
+        }
+      );
+    } else {
+      this.snackBar.open(
+        'Password not matched',
+        'Dismiss',
+        commonSnackBarConfig
+      );
+    }
   }
 
   onForgotPassword() {
@@ -168,22 +183,19 @@ export class SigninSignupComponent implements OnInit {
       return 'This field is required';
     }
     if (controlName === 'firstName' && control?.hasError('pattern')) {
-      return 'First letter uppercase';
+      return 'Ex:Tom';
     }
     if (controlName === 'lastName' && control?.hasError('pattern')) {
-      return 'First letter uppercase';
+      return 'Ex:Holland';
     }
     if (controlName === 'emailId' && control?.hasError('pattern')) {
-      return 'Please enter valid EmailId';
+      return 'Enter valid EmailId';
     }
     if (controlName === 'password' && control?.hasError('minlength')) {
       return 'Minimum length 6';
     }
     if (controlName === 'password' && control?.hasError('pattern')) {
-      return 'Include UpperCase, number & specialCharacter';
-    }
-    if (controlName === 'confirmPassword' && control?.hasError('pattern')) {
-      return 'Include UpperCase, number & specialCharacter';
+      return '1 Number,specialChar & Capital Letter';
     }
 
     return '';

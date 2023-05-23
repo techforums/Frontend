@@ -212,7 +212,7 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
     lineDiv.style.top = `${-this.lineHeight}px`;
     this.continuousFlow.nativeElement.appendChild(lineDiv);
 
-    const animationTime = 100; 
+    const animationTime = 130; 
     const distance =
       this.continuousFlow.nativeElement.offsetHeight + this.lineHeight;
     const speed = distance / animationTime;
@@ -315,7 +315,7 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
         console.log('populer tag: ', this.popularTags);
       },
       error: (err) => {
-        alert('Error while fetching the data');
+        // alert('Error while fetching the data');
       },
     });
   }
