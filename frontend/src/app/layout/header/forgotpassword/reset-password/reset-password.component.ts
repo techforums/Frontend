@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { AuthService } from 'src/app/service/auth.service';
 import { commonSnackBarConfig } from 'src/app/service/snackbar-config.service';
 @Component({
@@ -17,7 +18,8 @@ export class ResetPasswordComponent {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private ngxLoader: NgxUiLoaderService
   ) {}
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -32,43 +34,42 @@ export class ResetPasswordComponent {
     );
     this.resetPasswordForm = this.fb.group(
       {
+        email: ['', [Validators.required, Validators.email]],
+        verificationCode: ['', [Validators.required]],
         newPassword: [
           '',
           [
             Validators.required,
             Validators.pattern(pswd),
-            Validators.minLength(6),
+            Validators.minLength(8),
           ],
         ],
-        confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
-      },
-      { validator: this.checkPasswords }
-    );
-  }
-  checkPasswords(group: FormGroup) {
-    const newPassword = group.get('newPassword');
-    const confirmPassword = group.get('confirmPassword');
-    return newPassword &&
-      confirmPassword &&
-      newPassword.value === confirmPassword.value
-      ? null
-      : { passwordMismatch: true };
-  }
-  onResetPassword() {
-    this.authService.resetPassword(this.resetPasswordForm.value).subscribe(
-      (response) => {
-        console.log(response);
-        this.snackBar.open(response.message, 'Dismiss', commonSnackBarConfig);
-        this.router.navigateByUrl('/');
-      },
-      (error) => {
-        this.snackBar.open(
-          error.error.message,
-          'Dismiss',
-          commonSnackBarConfig
-        );
+        
       }
     );
+  }
+  onResetPassword() {
+    if (this.resetPasswordForm.valid) {
+      this.ngxLoader.start();
+      this.authService.resetPassword(this.resetPasswordForm.value).subscribe(
+        (response) => {
+          console.log(response);
+          this.ngxLoader.stop();
+          this.snackBar.open(response.message, 'Dismiss', commonSnackBarConfig);
+          this.router.navigateByUrl('/');
+        },
+        (error) => {
+          this.ngxLoader.stop();
+          this.snackBar.open(
+            error.error.message,
+            'Dismiss',
+            commonSnackBarConfig
+          );
+        }
+      );
+    } else {
+      return this.resetPasswordForm.markAllAsTouched();
+    }
   }
   getErrorMessage(controlName: string) {
     const control = this.resetPasswordForm.get(controlName);
@@ -79,16 +80,8 @@ export class ResetPasswordComponent {
       return 'Minimum length 6';
     }
     if (controlName === 'newPassword' && control?.hasError('pattern')) {
-      return 'Include UpperCase, number & specialCharacter';
+      return '1 Number,specialChar & Capital Letter';
     }
-    if (
-      controlName === 'confirmPassword' &&
-      control?.hasError('checkPasswords')
-    ) {
-      return 'Include UpperCase, number & specialCharacter';
-    }
-
-    return '';
 
     return '';
   }

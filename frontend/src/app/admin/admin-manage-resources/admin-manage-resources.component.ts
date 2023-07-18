@@ -7,8 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { DeleteBlogDialogComponent } from './delete-blog-dialog/delete-blog-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AdddocumentComponent } from 'src/app/resources/adddocument/adddocument.component';
-import { SpecificBlog } from 'src/app/model/specific-blog';
+
 
 @Component({
   selector: 'app-admin-manage-resources',
@@ -17,17 +16,13 @@ import { SpecificBlog } from 'src/app/model/specific-blog';
 })
 export class AdminManageResourcesComponent {
   blogs: Blog = {
-    _id: '',
-    title: '',
-    content: '',
-    createdDate: new Date(),   
-    // updatedDate : new Date(),
-    isApproved: new Boolean(),
-    userId: '',
-    user:{
-      firstName: '',
-      lastName: '',
-    },
+    blogId: '',
+    blogTitle: '',
+    blogContent: '',
+    createdDate: new Date(),
+    updatedDate: new Date(),
+    userId : '',
+    name:''
   };
 
   docs: Document = {
@@ -62,7 +57,7 @@ export class AdminManageResourcesComponent {
   value: boolean;
   pageNumber = 1;
   pageSize = 8;
-  totalPages:any
+  totalPages: any;
   constructor(
     private blogService: BlogService,
     private ngxLoader: NgxUiLoaderService,
@@ -73,13 +68,13 @@ export class AdminManageResourcesComponent {
   ngOnInit(): void {
     this.getAllBlogs();
   }
-  
+
   getAllBlogs() {
     this.ngxLoader.start();
     this.blogService.getAllAdminBlogs(this.pageNumber, this.pageSize).subscribe(
       (response) => {
         this.allblogs = response;
-        this.totalPages=response.length
+        this.totalPages = response.length;
         this.ngxLoader.stop();
       },
       (err) => {
@@ -100,7 +95,7 @@ export class AdminManageResourcesComponent {
     this.ngxLoader.start();
     this.blogService.approveBlog(_id).subscribe(
       (res) => {
-        console.log(res)
+        console.log(res);
         this.getAllBlogs();
         this.snackBar.open(
           'Successfully approved Blog!!',

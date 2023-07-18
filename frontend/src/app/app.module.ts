@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,7 +17,6 @@ import { DocumentComponent } from './resources/document/document.component';
 import { SpecificBlogComponent } from './resources/specific-blog/specific-blog.component';
 import { SpecificDocumentComponent } from './resources/specific-document/specific-document.component';
 import { DocumentService } from './service/document.service';
-import { SafePipe } from './pipes/safe.pipe';
 import { ResourcesComponent } from './resources/resources.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './layout/header/header.component';
@@ -58,6 +57,12 @@ import { GetDocumentsComponent } from './admin/admin-manage-resources/get-docume
 import { UpdateForumComponent } from './profile/manageforums/update-forum/update-forum.component';
 import { DeleteForumDialogComponent } from './profile/manageforums/delete-forum-dialog/delete-forum-dialog.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { AuthService } from './service/auth.service';
+import { BlogService } from './service/blog.service';
+import { ForumService } from './service/forum.service';
+import { ProfileService } from './service/profile.service';
+import { UserRoleService } from './service/user-role.service';
+import { AdminService } from './service/admin.service';
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsColor: '#00b8d4',
   fgsPosition: 'center-center',
@@ -128,7 +133,6 @@ ClassicEditor.defaultConfig = {
     UpdateForumComponent,
     SpecificBlogComponent,
     SpecificDocumentComponent,
-    SafePipe,
     UpdateBlogComponent,
     ManagebookmarksComponent,
     ManageforumsComponent,
@@ -168,8 +172,24 @@ ClassicEditor.defaultConfig = {
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     CKEditorModule,
   ],
+  exports: [
+    DashboardComponent,
+    LayoutComponent,
+    QuestioncardComponent,
+    SidenavComponent,
+    BlogComponent,
+    DocumentComponent,
+    ResourcesblogComponent,
+    ResourcesdocumentComponent,
+  ],
   providers: [
     DocumentService,
+    AuthService,
+    BlogService,
+    ForumService,
+    ProfileService,
+    UserRoleService,
+    AdminService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CookieInterceptor,
@@ -178,5 +198,6 @@ ClassicEditor.defaultConfig = {
     { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

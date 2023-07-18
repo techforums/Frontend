@@ -7,9 +7,7 @@ import { Blog } from 'src/app/model/blog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { commonSnackBarConfig } from 'src/app/service/snackbar-config.service';
 
-export interface tags {
-  name: string;
-}
+
 
 @Component({
   selector: 'app-addblog',
@@ -18,7 +16,8 @@ export interface tags {
 })
 export class AddblogComponent {
 
-  userId = localStorage.getItem('userId');
+  userId:any = localStorage.getItem('userId');
+  name:any = localStorage.getItem('name');
   public Editor = ClassicEditor;
   AddBlogForm = new FormGroup({
     title: new FormControl('', [
@@ -33,21 +32,17 @@ export class AddblogComponent {
   });
 
   blogs: Blog = {
-    _id: '',
-    title: '',
-    content: '',
+    blogId: '',
+    blogTitle: '',
+    blogContent: '',
     createdDate: new Date(),
-    //updatedDate: new Date(),
-    isApproved: new Boolean(),
-    userId: '',
-    user:{
-      firstName: '',
-      lastName: '',
-    },
+    updatedDate: new Date(),
+    userId :'',
+    name:''
   };
   public title: any;
   public content: any;
-  _id: string = '';
+  blogId: string = '';
   createdDate: Date = new Date();
   allblogs: Blog[] = [];
 
@@ -58,23 +53,31 @@ export class AddblogComponent {
   ) {}
 
   ngOnInit() {
-    this.title = this.blogs.title;
-    this.content = this.blogs.content;
+    this.title = this.blogs.blogTitle;
+    this.content = this.blogs.blogContent;
   }
 
   get valide() {
     return this.AddBlogForm.controls;
   }
   createBlogData() {
-    this.blogs.title = this.title;
-    this.blogs.content = this.content;
+    this.blogs.blogTitle = this.title;
+    this.blogs.blogContent = this.content;
     this.userId;
+    this.name;
+    this.blogs.userId = this.userId
+    this.blogs.name = this.name 
+    console.log(this.userId)
+    console.log(this.blogs);
+    
     this.createdDate = new Date();
     this.blogService.createBlog(this.blogs).subscribe(
       (res) => {
         console.log(res);
         this.allblogs = [];
         this.ngOnInit();
+        console.log("all blogs :", this.allblogs);
+        
         this.snackBar.open(
           "Your blog will be posted after Admin's approval!!",
           'Dismiss',
@@ -84,7 +87,7 @@ export class AddblogComponent {
       },
       (err) => {
         console.log(err);
-        console.log(this.blogs.content);
+        console.log(this.blogs.blogContent);
         this.snackBar.open(
           'Sorry, cannot add this blog.Try a valid Blog!!',
           'Dismiss',

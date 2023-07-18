@@ -14,25 +14,35 @@ export class BlogService {
 
   constructor(private http: HttpClient) {}
 
- //get all documents
- getAllBlogs(pageNumber: number, pageSize: number): Observable<Blog[]> {
-  return this.http.get<Blog[]>(`${this.baseUrl}/users/blog?pageNumber=${pageNumber}&pageSize=${pageSize}`).pipe(
-    map((response: any) => {
-      return response;
-    })
-  );
-}
+  //get all documents
+  //get all documents
+  getAllBlogs(pageNumber: number, pageSize: number): Observable<Blog[]> {
+    return this.http
+      .get<any>(
+        `${this.baseUrl}/users/blogs?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      )
+      .pipe(
+        map((response: any) => {
+          return response;
+        })
+      );
+  }
+
   getAllAdminBlogs(pageNumber: number, pageSize: number): Observable<Blog[]> {
-    return this.http.get<Blog[]>(`${this.baseUrl}/admin/blog?pageNumber=${pageNumber}&pageSize=${pageSize}`).pipe(
-      map((response: any) => {
-        return response;
-      })
-    );
+    return this.http
+      .get<Blog[]>(
+        `${this.baseUrl}/admin/blog?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      )
+      .pipe(
+        map((response: any) => {
+          return response;
+        })
+      );
   }
 
   //post a blog
   createBlog(blog: Blog): Observable<Blog> {
-    return this.http.post<Blog>(`${this.baseUrl}/users/blog`, blog).pipe(
+    return this.http.post<Blog>(`${this.baseUrl}/users/addblog`, blog ).pipe(
       map((response: any) => {
         return response;
       })
@@ -40,17 +50,19 @@ export class BlogService {
   }
 
   // get a specific blog
-  getBlogById(id: string): Observable<SpecificBlog> {
-    return this.http.get<SpecificBlog>(`${this.baseUrl}/users/blog/` + id).pipe(
-      map((response: any) => {
-        return response.data;
-      })
-    );
+  getBlogById(blogId: string): Observable<SpecificBlog> {
+    return this.http
+      .get<SpecificBlog>(`${this.baseUrl}/users/blogs/` + blogId)
+      .pipe(
+        map((response: any) => {
+          return response;
+        })
+      );
   }
 
   //delete a specific blog
-  deleteBlogById(id:string):Observable<Blog> {
-    return this.http.delete<Blog>(`${this.baseUrl}/users/blog/` + id).pipe(
+  deleteBlogById(id: string): Observable<Blog> {
+    return this.http.delete<Blog>(`${this.baseUrl}/users/blogs/` + id).pipe(
       map((response: any) => {
         return response.data;
       })
@@ -58,12 +70,14 @@ export class BlogService {
   }
 
   //approve blog
-  approveBlog(id:string ):Observable<Blog>{
-    const body = { isApproved: true}
-    return this.http.patch<Blog>(`${this.baseUrl}/admin/approveblog/` + id , body).pipe(
-      map((response: any) => {
-        return response;
-      })
-    );
+  approveBlog(id: string): Observable<Blog> {
+    const body = { isApproved: true };
+    return this.http
+      .patch<Blog>(`${this.baseUrl}/admin/approveblog/` + id, body)
+      .pipe(
+        map((response: any) => {
+          return response;
+        })
+      );
   }
 }

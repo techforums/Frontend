@@ -11,17 +11,14 @@
   </button>
 </div>
 <div class="title-container">
-  <span [innerHTML]="blogs.title" class="title">
-    {{ blogs.title }}
+  <span [innerHTML]="blog.blogTitle" class="title">
   </span>
   <span class="avatar">
-    <ngx-avatars [name]="blogs.userId.firstName + ' ' + blogs.userId.lastName" size="25" matSuffix>
-    </ngx-avatars></span>
-  {{ blogs.userId.firstName | titlecase }}
-  {{ blogs.userId.lastName | titlecase }}
-
-  {{ blogs.createdDate | date : "MMM d, y" }}
+    <ngx-avatars [name]="blog.name" size="25" matSuffix></ngx-avatars>
+  </span>
+  {{ blog.name| titlecase }}
+  {{ blog.createdDate | date: 'MMM d, y' }}
 </div>
-<div class="content" [innerHTML]="blogs.content">
-  {{ blogs.content }}
+
+<div class="content" [innerHTML]="blog.blogContent">
 </div>

@@ -71,13 +71,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     component: ManageresourcesComponent,
   },
- 
+
   {
     path: 'resourcesdocuments',
     canActivate: [AuthGuard],
     component: ResourcesdocumentComponent,
   },
- 
+
   {
     path: 'blog/:id',
     canActivate: [AuthGuard],
@@ -90,11 +90,19 @@ const routes: Routes = [
     component: SpecificDocumentComponent,
   },
   {
-    path: 'forgotpassword/reset-password/:id',
+    path: 'forgotpassword/reset-password',
     component: ResetPasswordComponent,
   },
-  { path: 'update-blog/:_id', canActivate: [AuthGuard],component: UpdateBlogComponent },
-  { path: 'update-forum/:_id', canActivate: [AuthGuard],component: UpdateForumComponent },
+  {
+    path: 'update-blog/:_id',
+    canActivate: [AuthGuard],
+    component: UpdateBlogComponent,
+  },
+  {
+    path: 'update-forum/:_id',
+    canActivate: [AuthGuard],
+    component: UpdateForumComponent,
+  },
 ];
 
 @NgModule({

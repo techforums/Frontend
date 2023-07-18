@@ -22,6 +22,8 @@ import { SigninSignupComponent } from 'src/app/layout/header/signin-signup/signi
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+// import { log } from 'console';
 
 @Component({
   selector: 'app-questioncard',
@@ -29,12 +31,19 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./questioncard.component.css'],
 })
 export class QuestioncardComponent implements OnInit, AfterViewInit {
+  @ViewChild('continuousFlow', { static: false }) continuousFlow: ElementRef;
   public currentPage: number = 1;
   public hasMore: boolean = false;
   public totalPages: number = 0;
   public totalPageArray: any[];
-
-  @ViewChild('continuousFlow', { static: false }) continuousFlow: ElementRef;
+  drops: any[] = [];
+  symbolSet: string[] = ['T', 'E', 'C', 'H', 'F', 'O', 'R', 'U', 'M'];
+  canvasHeight: number;
+  canvasWidth: number;
+  dropSpeedMin: number = 6;
+  dropSpeedMax: number = 10;
+  dropWidth: number = 10;
+  dropHeight: number = 20;
   isMobile!: boolean;
   isUserAuthenticated!: boolean;
   public allBlogs: any;
@@ -49,35 +58,6 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
   pageSize = 10;
   public questionsget: any[] = [];
   public bookmarkget: any[] = [];
-  words: string[] = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ];
-
   public ansbyid: any;
   public userId = localStorage.getItem('userId');
   public quetionId: any;
@@ -101,7 +81,6 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
   public popularTags: string[];
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private router: Router,
     private forum: ForumService,
     private elementRef: ElementRef,
@@ -109,19 +88,24 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
     private blogService: BlogService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private ngxLoader: NgxUiLoaderService
   ) {
     this.breakpointObserver.observe(Breakpoints.Handset).subscribe((result) => {
       this.isMobile = result.matches;
     });
   }
-  lineHeight = 20;
-  columnWidth = 14;
-  columns: number;
-  rows: number[];
-  speed = 10;
-  intervalId: any;
+
   ngOnInit() {
+    this.startFallingWords();
+    this.canvasHeight = window.innerHeight;
+    this.canvasWidth = window.innerWidth;
+
+    this.initializeDrops();
+
+    // Start the animation loop
+    this.animate();
+    this.ngxLoader.start();
     this.getQuestion();
     this.getBookmarkByUserId();
 
@@ -152,98 +136,38 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
         }
       );
     }
+    this.ngxLoader.stop();
   }
 
-  ngAfterViewInit() {
-    this.columns = Math.floor(
-      this.continuousFlow.nativeElement.offsetWidth / this.columnWidth
-    );
-    this.rows = Array.from({ length: this.columns }, () => 0);
-
-    this.startFallingWords();
-
-    fromEvent(window, 'resize')
-      .pipe(debounceTime(100))
-      .subscribe(() => {
-        this.columns = Math.floor(
-          this.continuousFlow.nativeElement.offsetWidth / this.columnWidth
-        );
-        this.rows = Array.from({ length: this.columns }, () => 0);
-      });
-  }
-  startFallingWords() {
-    clearInterval(this.intervalId); 
-
-    this.intervalId = setInterval(() => {
-      this.addRow();
-    }, this.speed);
-  }
-
-  addRow() {
-    const rowIndex = Math.floor(Math.random() * this.columns);
-    const wordsCount = Math.floor(Math.random() * (5 - 2 + 1) + 2);
-    const words: string[] = [];
-    const opacities: number[] = [];
-
-    for (let i = 0; i < wordsCount; i++) {
-      const letterIndex = Math.floor(Math.random() * this.words.length);
-      const letter = this.words[letterIndex];
-      words.push(letter);
-
-      const opacity = Math.random() * (1 - 0.3) + 0.3;
-      opacities.push(opacity);
+  initializeDrops() {
+    const numDrops = Math.floor(this.canvasWidth / this.dropWidth);
+    for (let i = 0; i < numDrops; i++) {
+      const drop = {
+        top: -Math.floor(Math.random() * this.canvasHeight),
+        left: i * this.dropWidth,
+        speed:
+          Math.floor(
+            Math.random() * (this.dropSpeedMax - this.dropSpeedMin + 1)
+          ) + this.dropSpeedMin,
+        opacity: Math.random().toFixed(1),
+        symbol:
+          this.symbolSet[Math.floor(Math.random() * this.symbolSet.length)],
+      };
+      this.drops.push(drop);
     }
+  }
 
-    const lineDiv = document.createElement('div');
-    lineDiv.className = 'line';
-
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      const opacity = opacities[i];
-
-      const wordDiv = document.createElement('div');
-      wordDiv.innerText = word;
-      wordDiv.style.opacity = opacity.toString();
-      lineDiv.appendChild(wordDiv);
-    }
-
-    lineDiv.style.position = 'absolute';
-    lineDiv.style.right = `${rowIndex * this.columnWidth}px`;
-    lineDiv.style.top = `${-this.lineHeight}px`;
-    this.continuousFlow.nativeElement.appendChild(lineDiv);
-
-    const animationTime = 130; 
-    const distance =
-      this.continuousFlow.nativeElement.offsetHeight + this.lineHeight;
-    const speed = distance / animationTime;
-
-    let currentPosition = -this.lineHeight;
-    const interval = setInterval(() => {
-      currentPosition += speed;
-      if (currentPosition >= distance) {
-        clearInterval(interval);
-        this.continuousFlow.nativeElement.removeChild(lineDiv);
-      } else {
-        lineDiv.style.top = `${currentPosition}px`;
+  animate() {
+    setInterval(() => {
+      for (let drop of this.drops) {
+        drop.top += drop.speed;
+        if (drop.top > this.canvasHeight) {
+          drop.top = -this.dropHeight;
+          drop.symbol =
+            this.symbolSet[Math.floor(Math.random() * this.symbolSet.length)];
+        }
       }
-    }, 7);
-  }
-  isColliding(top: number, left: number, width: number): boolean {
-    const elements =
-      this.continuousFlow.nativeElement.querySelectorAll('.line > div');
-    for (let i = 0; i < elements.length; i++) {
-      const element = elements[i] as HTMLElement;
-      const rect = element.getBoundingClientRect();
-      if (
-        top >= rect.top - this.lineHeight &&
-        top <= rect.bottom &&
-        left >= rect.left - width &&
-        left <= rect.right
-      ) {
-        return true;
-      }
-    }
-    return false;
+    }, 50); // Change the interval value to adjust the animation speed (in milliseconds)
   }
   addBookmark(userId: any, questionId: any) {
     this.forum
@@ -255,7 +179,8 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
         next: (res) => {
           this.allBookmarks.push(res);
           this.getBookmarkByUserId();
-          console.log("Add Bookmark: ",res);
+          console.log('Add Bookmark: ', res);
+          console.log('Add Bookmark: ', res);
         },
         error: (err) => {
           console.log('Error while sending the data ' + err);
@@ -272,7 +197,7 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
   toggleBookmark(questionId: string) {
     if (!this.userId) {
       this.openSignInDialog();
-    } else {   
+    } else {
       this.isBookmarked(questionId);
       this.addBookmark(this.userId, questionId);
       this.getBookmarkByUserId();
@@ -310,31 +235,34 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
         });
         console.log('frequencies tag: ', this.tagFrequencies);
         this.popularTags = Object.keys(this.tagFrequencies).filter(
-          (tag) => this.tagFrequencies[tag] > 1
+          (tag) => this.tagFrequencies[tag] >= 1
         );
         console.log('populer tag: ', this.popularTags);
       },
-      error: (err) => {
-        // alert('Error while fetching the data');
-      },
+      // error: (err) => {
+      //   alert('Error while fetching the data');
+      // },
     });
   }
 
   onNextPage() {
     if (this.hasMore) {
       this.currentPage++;
+      this.tagFrequencies = {};
       this.getQuestion();
     }
   }
 
   onSetPage(page: number) {
     this.currentPage = page;
+    this.tagFrequencies = {};
     this.getQuestion();
   }
 
   onPrevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.tagFrequencies = {};
       this.getQuestion();
     }
   }
@@ -381,5 +309,113 @@ export class QuestioncardComponent implements OnInit, AfterViewInit {
 
   public clearFilter() {
     this.filteredQuestions = null;
+  }
+  words: string[] = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+  ];
+  lineHeight = 20;
+  columnWidth = 14;
+  columns: number;
+  rows: number[];
+  speed = 10;
+  intervalId: any;
+  ngAfterViewInit() {
+    this.columns = Math.floor(
+      this.continuousFlow.nativeElement.offsetWidth / this.columnWidth
+    );
+    this.rows = Array.from({ length: this.columns }, () => 0);
+
+    this.startFallingWords();
+
+    fromEvent(window, 'resize')
+      .pipe(debounceTime(100))
+      .subscribe(() => {
+        this.columns = Math.floor(
+          this.continuousFlow.nativeElement.offsetWidth / this.columnWidth
+        );
+        this.rows = Array.from({ length: this.columns }, () => 0);
+      });
+  }
+  startFallingWords() {
+    clearInterval(this.intervalId);
+
+    this.intervalId = setInterval(() => {
+      this.addRow();
+    }, this.speed);
+  }
+
+  addRow() {
+    const rowIndex = Math.floor(Math.random() * this.columns);
+    const wordsCount = Math.floor(Math.random() * (5 - 2 + 1) + 2);
+    const words: string[] = [];
+    const opacities: number[] = [];
+
+    for (let i = 0; i < wordsCount; i++) {
+      const letterIndex = Math.floor(Math.random() * this.words.length);
+      const letter = this.words[letterIndex];
+      words.push(letter);
+
+      const opacity = Math.random() * (1 - 0.3) + 0.3;
+      opacities.push(opacity);
+    }
+
+    const lineDiv = document.createElement('div');
+    lineDiv.className = 'line';
+
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      const opacity = opacities[i];
+
+      const wordDiv = document.createElement('div');
+      wordDiv.innerText = word;
+      wordDiv.style.opacity = opacity.toString();
+      lineDiv.appendChild(wordDiv);
+    }
+
+    lineDiv.style.position = 'absolute';
+    lineDiv.style.right = `${rowIndex * this.columnWidth}px`;
+    lineDiv.style.top = `${-this.lineHeight}px`;
+    this.continuousFlow.nativeElement.appendChild(lineDiv);
+
+    const animationTime = 130;
+    const distance =
+      this.continuousFlow.nativeElement.offsetHeight + this.lineHeight;
+    const speed = distance / animationTime;
+
+    let currentPosition = -this.lineHeight;
+    const interval = setInterval(() => {
+      currentPosition += speed;
+      if (currentPosition >= distance) {
+        clearInterval(interval);
+        this.continuousFlow.nativeElement.removeChild(lineDiv);
+      } else {
+        lineDiv.style.top = `${currentPosition}px`;
+      }
+    }, 7);
   }
 }

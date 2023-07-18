@@ -8,7 +8,9 @@ import { Answer } from 'src/app/model/answer';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { commonSnackBarConfig } from 'src/app/service/snackbar-config.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-// import { log } from 'console';
+import { MatDialog } from '@angular/material/dialog';
+import { SigninSignupComponent } from 'src/app/layout/header/signin-signup/signin-signup.component';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-queanspage',
@@ -71,8 +73,10 @@ export class QueanspageComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private forum: ForumService,
-    private  snackBar:MatSnackBar,
-    private changeDetector: ChangeDetectorRef
+    private snackBar: MatSnackBar,
+    private changeDetector: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private ngxLoader: NgxUiLoaderService
   ) {}
 
   get valide() {
@@ -81,14 +85,15 @@ export class QueanspageComponent {
 
   answerVotes: { [answerId: string]: 'up' | 'down' | null } = {};
 
-  answerVote: {[key: string]: {upvotes: any[], downvotes: any[]} | null} = {};
+  answerVote: { [key: string]: { upvotes: any[]; downvotes: any[] } | null } =
+    {};
 
- 
-    isUpVoted(answerId:any) {
-      return this.ansbyid?.some((upVote) => upVote.upvotes.userId === this.userId,
-      this.answerVotes[answerId] = 'up'
-      );
-    }
+  isUpVoted(answerId: any) {
+    return this.ansbyid?.some(
+      (upVote) => upVote.upvotes.userId === this.userId,
+      (this.answerVotes[answerId] = 'up')
+    );
+  }
   upvotesAnswer(id: any) {
     console.log(id);
     console.log(this.userId);
@@ -110,7 +115,7 @@ export class QueanspageComponent {
       }
     );
   }
-  
+
   downvotesAnswer(id: any) {
     console.log(id);
     console.log(this.userId);
@@ -118,7 +123,7 @@ export class QueanspageComponent {
       (res) => {
         this.downvote = res;
         this.answerVote[id]!.downvotes = res.downvotes;
-        console.log("resdownvotesssss",res.downvotes);
+        console.log('resdownvotesssss', res.downvotes);
         console.log(res);
         this.getAnswerById();
         this.changeDetector.detectChanges();
@@ -133,7 +138,7 @@ export class QueanspageComponent {
       }
     );
   }
-  
+
   getQuestionById() {
     this.activatedRoute.paramMap.subscribe((params) => {
       this.queId = params.get('id');
@@ -150,7 +155,10 @@ export class QueanspageComponent {
       this.forum.getAnswerById(params.get('id')).subscribe((res: any) => {
         this.ansbyid = res.data;
         this.ansbyid.forEach((answer: any) => {
-          this.answerVote[answer._id] = {upvotes: answer.upvotes, downvotes: answer.downvotes};
+          this.answerVote[answer._id] = {
+            upvotes: answer.upvotes,
+            downvotes: answer.downvotes,
+          };
           console.log('comingggggggggggggg', this.answerVote[answer._id]);
         });
         console.log('coming................', res.data);
@@ -179,10 +187,19 @@ export class QueanspageComponent {
       });
   }
 
+  openSignInDialog(): void {
+    const dialogRef = this.dialog.open(SigninSignupComponent, {
+      width: 'auto',
+    });
+  }
+
   toggleBookmark(questionId: string) {
-    this.isBookmarked(questionId);
-    console.log('questionId', questionId);
-    this.addBookmark(this.userId, questionId);
+    if (!this.userId) {
+      this.openSignInDialog();
+    } else {
+      this.isBookmarked(questionId);
+      this.addBookmark(this.userId, questionId);
+    }
   }
 
   isBookmarked(questionId: string) {
@@ -205,10 +222,19 @@ export class QueanspageComponent {
   }
 
   ngOnInit() {
+    this.ngxLoader.start();
     this.getQuestionById();
     this.getAnswerById();
     this.getBookmarkByUserId();
+    this.ngxLoader.stop();
+  }
 
+  signInCheck() {
+    if (!this.userId) {
+      this.openSignInDialog();
+    } else {
+      return;
+    }
   }
 
   answerSubmit() {
@@ -225,7 +251,9 @@ export class QueanspageComponent {
       .subscribe({
         next: (res) => {
           console.log(res);
+          this.PostAnswer.reset();
           this.snackBar.open(res.message, 'Dismiss', commonSnackBarConfig);
+          this.getAnswerById();
         },
         error: (err) => {
           console.log('Error while sending the data ' + err);
