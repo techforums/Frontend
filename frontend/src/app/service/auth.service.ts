@@ -41,20 +41,21 @@ export class AuthService {
     });
   }
 
-  signUp(body: {
+  signUp(user: {
     firstName: string;
     lastName: string;
     email: string;
+    password: string;
   }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signup`, body);
+    return this.http.post(`${this.baseUrl}/signup`, user);
   }
 
-  forgotPassword(body: { email: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/users/forgotpassword`, body);
+  forgotPassword(emailId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/forgotpassword`, emailId);
   }
   resetPassword(data: any): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/forgotpassword/reset-password`,
+      `${this.baseUrl}/forgotpassword/reset-password/`,
       data
     );
   }

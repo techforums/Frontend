@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
     });
   }
 
-  canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const userId = localStorage.getItem('userId');
     const expirationTime = localStorage.getItem('userIdExpiration');
     if (!userId || !expirationTime || new Date(expirationTime) < new Date()) {

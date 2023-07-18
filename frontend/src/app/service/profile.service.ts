@@ -4,7 +4,6 @@ import { Observable, map } from 'rxjs';
 import { Question } from '../model/question';
 import { Blog } from '../model/blog';
 import { environment } from 'src/environments/environment.prod';
-import { SpecificBlog } from '../model/specific-blog';
 
 @Injectable({
   providedIn: 'root',
@@ -36,19 +35,17 @@ export class ProfileService {
         })
       );
   }
-// get user blogs by userId
-  getUserBlogById(userId: string): Observable<Blog> {
-    return this.http.get<Blog>(`${this.baseUrl}/user/blogs/${userId}`);
+
+  getUserBlogById(id: string): Observable<Blog> {
+    return this.http.get<Blog>(`${this.baseUrl}/users/blogbyuser/${id}`);
   }
 
-  getBlogById(blogId: string): Observable<Blog> {
-    return this.http
-      .get<Blog>(`${this.baseUrl}/users/blogs/` + blogId)
-      .pipe(
-        map((response: any) => {
-          return response;
-        })
-      );
+  getBlogById(id: string): Observable<Blog> {
+    return this.http.get<Blog>(`${this.baseUrl}/users/blog/` + id).pipe(
+      map((response: any) => {
+        return response.data;
+      })
+    );
   }
 
   getmanageBookmarkById(id: string): Observable<any> {
@@ -96,7 +93,7 @@ export class ProfileService {
 
   updateBlogs(blog: Blog): Observable<Blog> {
     return this.http
-      .put<Blog>(`${this.baseUrl}/users/updateblog/` + blog.blogId, blog)
+      .patch<Blog>(`${this.baseUrl}/users/blog/` + blog._id, blog)
       .pipe(
         map((response: any) => {
           return response;

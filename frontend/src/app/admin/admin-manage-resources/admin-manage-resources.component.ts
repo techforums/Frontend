@@ -16,13 +16,17 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AdminManageResourcesComponent {
   blogs: Blog = {
-    blogId: '',
-    blogTitle: '',
-    blogContent: '',
-    createdDate: new Date(),
-    updatedDate: new Date(),
-    userId : '',
-    name:''
+    _id: '',
+    title: '',
+    content: '',
+    createdDate: new Date(),   
+     updatedDate : new Date(),
+    isApproved: new Boolean(),
+    userId: '',
+    user:{
+      firstName: '',
+      lastName: '',
+    },
   };
 
   docs: Document = {
@@ -57,7 +61,7 @@ export class AdminManageResourcesComponent {
   value: boolean;
   pageNumber = 1;
   pageSize = 8;
-  totalPages: any;
+  totalPages:any
   constructor(
     private blogService: BlogService,
     private ngxLoader: NgxUiLoaderService,
@@ -68,13 +72,13 @@ export class AdminManageResourcesComponent {
   ngOnInit(): void {
     this.getAllBlogs();
   }
-
+  
   getAllBlogs() {
     this.ngxLoader.start();
     this.blogService.getAllAdminBlogs(this.pageNumber, this.pageSize).subscribe(
       (response) => {
         this.allblogs = response;
-        this.totalPages = response.length;
+        this.totalPages=response.length
         this.ngxLoader.stop();
       },
       (err) => {
@@ -95,7 +99,7 @@ export class AdminManageResourcesComponent {
     this.ngxLoader.start();
     this.blogService.approveBlog(_id).subscribe(
       (res) => {
-        console.log(res);
+        console.log(res)
         this.getAllBlogs();
         this.snackBar.open(
           'Successfully approved Blog!!',

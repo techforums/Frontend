@@ -34,19 +34,27 @@ export class ResetPasswordComponent {
     );
     this.resetPasswordForm = this.fb.group(
       {
-        email: ['', [Validators.required, Validators.email]],
-        verificationCode: ['', [Validators.required]],
         newPassword: [
           '',
           [
             Validators.required,
             Validators.pattern(pswd),
-            Validators.minLength(8),
+            Validators.minLength(6),
           ],
         ],
-        
-      }
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validator: this.checkPasswords }
     );
+  }
+  checkPasswords(group: FormGroup) {
+    const newPassword = group.get('newPassword');
+    const confirmPassword = group.get('confirmPassword');
+    return newPassword &&
+      confirmPassword &&
+      newPassword.value === confirmPassword.value
+      ? null
+      : { passwordMismatch: true };
   }
   onResetPassword() {
     if (this.resetPasswordForm.valid) {
@@ -68,7 +76,11 @@ export class ResetPasswordComponent {
         }
       );
     } else {
-      return this.resetPasswordForm.markAllAsTouched();
+      this.snackBar.open(
+        'Password not matched',
+        'Dismiss',
+        commonSnackBarConfig
+      );
     }
   }
   getErrorMessage(controlName: string) {

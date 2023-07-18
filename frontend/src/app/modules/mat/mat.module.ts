@@ -1,4 +1,4 @@
-import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
@@ -67,6 +67,5 @@ const modules = [
     },
     ForumService,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MatModule {}

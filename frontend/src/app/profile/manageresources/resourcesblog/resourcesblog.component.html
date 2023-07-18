@@ -3,52 +3,53 @@
     <mat-icon style="font-size: 20px; align-items: center">arrow_back</mat-icon>
   </button>
 </div>
-<div >
+<div *ngIf="blog.length > 0">
   <div style="display: flex; flex-wrap: wrap; justify-content: center">
-    <mat-card *ngFor="let blog of allblogs" class="blogbox" style="width: 350px">
+    <mat-card *ngFor="let blogs of blog" class="blogbox" style="width: 350px">
       <mat-card-header>
         <div class="userdetail">
           <div style="margin-right: 6px">
             <div class="img">
               <ngx-avatars
-                [name]="blog.name"
+                [name]="blogs.userId.firstName + ' ' + blogs.userId.lastName"
                 size="30"
                 matSuffix
               ></ngx-avatars>
             </div>
           </div>
           <div class="username">
-            {{ blog.name }}
+            {{ blogs.userId?.firstName }}
+            {{ blogs.userId?.lastName }}
           </div>
         </div>
       </mat-card-header>
       <mat-card-header>
     
-        <div class="createdAt"*ngIf="blog.createdDate">
+        <div class="createdAt"*ngIf="blogs.createdDate">
           <span style="font-weight: 500"> Created </span>
-          {{ blog.createdDate | date : "d MMM, yy" }}
+          {{ blogs.createdDate | date : "d MMM, yy" }}
         </div>
-        <div class="updatedAt"*ngIf="blog.updatedDate">
+        <div class="updatedAt"*ngIf="blogs.updatedDate">
           <span style="font-weight: 500">Updated</span>
-          {{ blog.updatedDate | date : "d MMM, yy" }}
+          {{ blogs.updatedDate | date : "d MMM, yy" }}
         </div>
 
       </mat-card-header>
   
       <mat-card-content>
-        <mat-card-title class="blog" [innerHTML]="blog.blogTitle">
-          {{ blog.blogTitle }}
+        <mat-card-title class="blog" [innerHTML]="blogs.title">
+          {{ blogs.title }}
         </mat-card-title>
         <div class="card-content">
-          <div class="blog-content" [innerHTML]="blog.blogContent">
-            {{ blog.blogContent }}
+          <div class="blog-content" [innerHTML]="blogs.content">
+            {{ blogs.content }}
           </div>
         </div>
         <mat-card-actions>
           <button
             class="readmore"
             mat-raised-button
-            [routerLink]="['/blog', blog.blogId]"
+            [routerLink]="['/blog', blogs._id]"
             color="primary"
           >
             Read More
@@ -59,12 +60,12 @@
           <mat-icon
             style="cursor: pointer; padding-right: 10px"
             matTooltip="Update Blog"
-            [routerLink]="['/update-blog', blog.blogId]"
+            [routerLink]="['/update-blog', blogs._id]"
             >edit</mat-icon
           >
           <mat-icon
             style="cursor: pointer"
-            (click)="deleteBlogDialog(blog.blogId)"
+            (click)="deleteBlogDialog(blogs._id)"
             matTooltip="Delete Blog"
             >delete</mat-icon
           >
@@ -73,7 +74,7 @@
     >
   </div>
 </div>
-<!-- <div class="noBlogs" *ngIf="blog.length === 0">
+<div class="noBlogs" *ngIf="blog.length === 0">
   <div>
     <p>You have not added any Blog!!<br />Add New Blog!!</p>
     <button routerLink="/resources" mat-raised-button color="primary">
@@ -81,4 +82,4 @@
       Add Blog
     </button>
   </div>
-</div> -->
+</div>

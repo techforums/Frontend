@@ -20,17 +20,17 @@
             <tr *ngFor="let blogs of allblogs">
               <td
                 class="blog"
-                [routerLink]="['/blog', blogs.blogId]"
+                [routerLink]="['/blog', blogs._id]"
                 style="cursor: pointer"
               >
-                {{ blogs.blogId }}
+                {{ blogs._id }}
               </td>
-              <td>{{ blogs.blogTitle }}</td>
-              <!-- <td>
+              <td>{{ blogs.title }}</td>
+              <td>
                 {{ blogs.user.firstName | titlecase }}
                 {{ blogs.user.lastName | titlecase }}
-              </td> -->
-              <!-- <td>
+              </td>
+              <td>
                 <button
                   color="primary"
                   style="cursor: pointer; border-radius: 20px"
@@ -40,11 +40,11 @@
                 >
                   Approve</button
                 >{{ blogs.isApproved ? "isApproved" : "" }}
-              </td> -->
+              </td>
               <td>
                 <mat-icon
                   style="cursor: pointer"
-                  (click)="deleteBlogDialog(blogs.blogId)"
+                  (click)="deleteBlogDialog(blogs._id)"
                   >delete</mat-icon
                 >
               </td>
