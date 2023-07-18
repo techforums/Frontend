@@ -78,16 +78,16 @@ export class SigninSignupComponent implements OnInit {
             Validators.pattern("([A-Z][a-z]*)([\\s\\'-])*"),
           ],
         ],
-        emailId: ['', [Validators.required, Validators.pattern(regex)]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(pswd),
-            Validators.minLength(6),
-          ],
-        ],
-        confirmPassword: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.pattern(regex)]],
+        // password: [
+        //   '',
+        //   [
+        //     Validators.required,
+        //     Validators.pattern(pswd),
+        //     Validators.minLength(6),
+        //   ],
+        // ],
+        // confirmPassword: ['', [Validators.required]],
       }
       // { validator: this.checkPasswords }
     );
@@ -134,7 +134,7 @@ export class SigninSignupComponent implements OnInit {
   }
 
   onSignUp(): void {
-    if (this.signUpForm.valid) {
+    // if (this.signUpForm.valid) {
       this.ngxLoader.start();
       this.authService.signUp(this.signUpForm.value).subscribe(
         (response) => {
@@ -155,9 +155,9 @@ export class SigninSignupComponent implements OnInit {
           );
         }
       );
-    } else {
-      return this.signUpForm.markAllAsTouched();
-    }
+    // } else {
+    //   return this.signUpForm.markAllAsTouched();
+    // }
   }
 
   onForgotPassword() {
